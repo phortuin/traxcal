@@ -12,7 +12,10 @@ exports.up = knex => {
 		})
 		.createTable('portions', table => {
 			table.increments()
-			table.foreign('id').references('id').inTable('foods').onDelete('CASCADE')
+			table.integer('food_id').unsigned()
+			table.foreign('food_id')
+				.references('foods.id')
+				.onDelete('cascade')
 			table.string('portion')
 			table.integer('size')
 		})
