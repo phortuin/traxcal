@@ -4,10 +4,14 @@ const knex = require('knex')({
 })
 
 module.exports = async (request, response) => {
+	const { portion, size, food_id } = JSON.parse(request.body)
 	try {
-		const res = await knex.raw('select * from food').then(responsibo => {
-			return JSON.stringify(responsibo.rows)
-		})
+		const res = await knex('portions')
+			.insert({
+				portion,
+				size,
+				food_id
+			})
 		response.end(res)
 	} catch(error) {
 		console.error(error)
