@@ -3,7 +3,6 @@ exports.seed = knex => {
 		.then(() => {
 			return knex('foods').insert([
 				{
-					id: 1,
 					food: 'Appel',
 					calories: 59,
 					carb: 13,
@@ -11,15 +10,13 @@ exports.seed = knex => {
 					fat: 0.2,
 				},
 				{
-					id: 2,
-					food: 'Milner 30+',
+					food: 'Milner 30+ kaas',
 					calories: 290,
 					carb: 0,
 					protein: 30,
 					fat: 19,
 				},
 				{
-					id: 3,
 					food: 'Hüttenkäse',
 					calories: 91,
 					carb: 1.6,

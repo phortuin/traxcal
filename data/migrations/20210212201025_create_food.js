@@ -19,10 +19,19 @@ exports.up = knex => {
 			table.string('portion')
 			table.integer('size')
 		})
+		.createTable('diary', table => {
+			table.increments()
+			table.integer('portion_id').unsigned()
+			table.foreign('portion_id')
+				.references('portions.id')
+				.onDelete('cascade')
+			table.date('date')
+		})
 }
 
 exports.down = knex => {
 	return knex.schema
+		.dropTableIfExists('diary')
 		.dropTableIfExists('portions')
 		.dropTableIfExists('foods')
 }
