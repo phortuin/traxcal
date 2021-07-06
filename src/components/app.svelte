@@ -154,7 +154,7 @@
 
 		<datalist id="portions">
 			{#each portions_ as portion}
-		    <option value="{ portion.id }">{ portion.portion } ({ portion.size }g)</option>
+		    <option value="{ portion.portion_id }">{ portion.food }: { portion.portion } ({ portion.size }g)</option>
 		    {/each}
 		</datalist>
 		<button>add portion</button>
@@ -202,10 +202,10 @@
 	<ul>
 		{#each portions_ as portion}
 		<li>
-			{ portion.portion }
+			{ portion.food }: { portion.portion }
 			<form class="inline" method="post" action="/api/portions">
 				<input type="hidden" name="_method" value="delete">
-				<input type="hidden" name="id" value="{ portion.id }">
+				<input type="hidden" name="id" value="{ portion.portion_id }">
 				<button>Delete</button>
 			</form>
 		</li>
