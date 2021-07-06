@@ -126,7 +126,7 @@
 	<h2>New portion</h2>
 
 	<form method="post"
-		action="/api/create_portion"
+		action="/api/portions"
 		on:submit|preventDefault={ handlePortionSubmit }>
 		<label>Portion description</label>
 		<input type="text" name="portion">
@@ -145,7 +145,7 @@
 	<h2>New food</h2>
 
 	<form method="post"
-		action="/api/create_food"
+		action="/api/foods"
 		on:submit|preventDefault={ handleFoodSubmit }>
 		<label>Food description</label>
 		<input type="text" name="food">
