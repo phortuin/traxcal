@@ -8,7 +8,7 @@
 	export let goal = 3500
 
 	onMount(async () => {
-		stuff = await fetch(`/api/read_diary`)
+		stuff = await fetch(`/api/diary`)
 			.then(response => response.json())
 			.then(data => {
 				portions_ = data.portions
