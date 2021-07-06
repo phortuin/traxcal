@@ -3,12 +3,31 @@ const { handleByMethod, handleErrors } = require('../lib/middleware')
 const knex = require('../lib/knex-instance')
 
 // Endpoint handler
-module.exports = handleErrors(handleByMethod({ post, delete: delete_ }))
+module.exports = handleErrors(handleByMethod({ get, post, del }))
+
+/**
+ * Get diary for today. For convenience, all foods and portions are sent back
+ * to the client as well.
+ *
+ * @param  {HTTP Request Object} req
+ * @param  {HTTP Response Object} res
+ */
+async function get(req, res) {
+	const diary = await knex('diary')
+		.join('portions', 'portions.id', '=', 'diary.portion_id')
+		.join('foods', 'foods.id', '=', 'portions.food_id')
+		.select(['diary.id as diary_id', '*'])
+		.where('date', '=', new Date())
+	const portions = await knex('portions')
+		.select('*')
+	const foods = await knex('foods')
+		.select('*')
+	res.end(JSON.stringify({ diary, portions, foods }))
+}
 
 /**
  * Insert diary entry in database. Expects the request body to be the portion
  * id and inserts the current date as timestamp for the new diary entry.
- *
  * Responds with the database’s response
  *
  * @param  {HTTP Request Object} req
@@ -30,7 +49,7 @@ async function post(req, res) {
  * @param  {HTTP Request Object} req
  * @param  {HTTP Response Object} res
  */
-async function delete_(req, res) {
+async function del(req, res) {
 	await knex('diary')
 		.where('id', req.body.id)
 		.del()
