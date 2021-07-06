@@ -11,7 +11,6 @@
 		stuff = await fetch(`/api/read_diary`)
 			.then(response => response.json())
 			.then(data => {
-				console.log(data.diary)
 				portions_ = data.portions
 				foods_ = data.foods
 				data_ = data.diary.reduce((calories, item) => {
@@ -19,7 +18,7 @@
 				}, [])
 				return data.diary.reduce((string, item) => {
 					const numbers = portionNumbers(item)
-					string += `${item.portion}: ${numbers.calories}cal, ${numbers.carb}c, ${numbers.protein}p, ${numbers.fat}f <a href="/api/destroy_diary?id=${item.diary_id}">Delete</a><br>`
+					string += `${item.portion}: ${numbers.calories}cal, ${numbers.carb}c, ${numbers.protein}p, ${numbers.fat}f <form class="inline" method="post" action="/api/diary"><input type="hidden" name="_method" value="delete"><input type="hidden" name="id" value="${item.diary_id}"><button>delete</button></form><br>`
 					return string
 				}, '')
 			})
@@ -52,7 +51,8 @@
 			window.location.reload()
 		} else {
 			alert('Something wrong :(')
-			console.log(response)
+			response.json()
+				.then(console.log)
 		}
 	}
 
@@ -73,7 +73,8 @@
 			window.location.reload()
 		} else {
 			alert('NOOO')
-			console.log(response)
+			response.json()
+				.then(console.log)
 		}
 	}
 
@@ -96,7 +97,8 @@
 			window.location.reload()
 		} else {
 			alert('AW SHUCKS')
-			console.log(response)
+			response.json()
+				.then(console.log)
 		}
 	}
 </script>
@@ -107,7 +109,7 @@
 
 	<h2>New item in diary</h2>
 	<form method="post"
-		action="/api/create_diary"
+		action="/api/diary"
 		on:submit|preventDefault={ handleSubmit }>
 
 		<label for="portion">Add portion to today</label>

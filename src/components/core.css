@@ -29,3 +29,16 @@ input[type=text],
 input[type=date] {
 	-webkit-appearance: none;
 }
+
+form.inline {
+	display: inline-block;
+}
+
+form.inline button {
+	border: 0;
+	background: none;
+	text-decoration: underline;
+	color: blue;
+	font-size: 1em;
+	cursor: pointer;
+}
