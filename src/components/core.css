@@ -42,3 +42,7 @@ form.inline button {
 	font-size: 1em;
 	cursor: pointer;
 }
+
+td, th {
+	text-align: left;
+}

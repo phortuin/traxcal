@@ -1,14 +1,14 @@
 <script>
 	import { onMount } from 'svelte'
 
-	export let stuff = 'Waiting for something'
+	export let diary = []
 	export let data_ = []
 	export let portions_ = []
 	export let foods_ = []
 	export let goal = 3500
 
 	onMount(async () => {
-		stuff = await fetch(`/api/diary`)
+		diary = await fetch(`/api/diary`)
 			.then(response => response.json())
 			.then(data => {
 				portions_ = data.portions
@@ -16,11 +16,18 @@
 				data_ = data.diary.reduce((calories, item) => {
 					return [ ...calories, item.size / 100 * item.calories ]
 				}, [])
-				return data.diary.reduce((string, item) => {
+				return data.diary.reduce((collection, item) => {
 					const numbers = portionNumbers(item)
-					string += `${item.portion}: ${numbers.calories}cal, ${numbers.carb}c, ${numbers.protein}p, ${numbers.fat}f <form class="inline" method="post" action="/api/diary"><input type="hidden" name="_method" value="delete"><input type="hidden" name="id" value="${item.diary_id}"><button>delete</button></form><br>`
-					return string
-				}, '')
+					const diaryItem = {
+						portion: item.portion,
+						calories: numbers.calories,
+						carb: numbers.carb,
+						protein: numbers.protein,
+						fat: numbers.fat,
+						id: item.diary_id
+					}
+					return [ ...collection, diaryItem ]
+				}, [])
 			})
 			.catch(console.log)
 		})
@@ -36,7 +43,7 @@
 	}
 
 	$: totalCals = Math.ceil(data_.reduce((total, calories) => total + calories, 0))
-	$: towardGoal = Math.ceil(100 * totalCals / goal) + '%'
+	$: towardGoal = Math.ceil(100 * totalCals / goal)
 
 	async function handleSubmit(event) {
 		const form = event.target
@@ -104,8 +111,38 @@
 </script>
 
 <article>
-	{@html stuff }
-	Total cals (have to get { goal }): { totalCals }, complete: { towardGoal }
+	<table>
+		<thead>
+			<tr>
+				<th>Food</th>
+				<th>Cals</th>
+				<th>Carbs</th>
+				<th>Protein</th>
+				<th>Fat</th>
+				<th></th>
+			</tr>
+			<tr>
+				<th></th>
+				<th colspan=5>{ totalCals } ({ towardGoal }%)</th>
+			</tr>
+		</thead>
+		{#each diary as diaryItem}
+		<tr>
+			<td>{ diaryItem.portion }</td>
+			<td>{ diaryItem.calories }</td>
+			<td>{ diaryItem.carb }</td>
+			<td>{ diaryItem.protein }</td>
+			<td>{ diaryItem.fat }</td>
+			<td>
+				<form class="inline" method="post" action="/api/diary">
+					<input type="hidden" name="_method" value="delete">
+					<input type="hidden" name="id" value="{ diaryItem.id }">
+					<button>Delete</button>
+				</form>
+			</td>
+		</tr>
+		{/each}
+	</table>
 
 	<h2>New item in diary</h2>
 	<form method="post"
@@ -159,4 +196,34 @@
 		<input type="number" name="fat" step="0.1">
 		<button>create food</button>
 	</form>
+
+	<h2>Portions</h2>
+
+	<ul>
+		{#each portions_ as portion}
+		<li>
+			{ portion.portion }
+			<form class="inline" method="post" action="/api/portions">
+				<input type="hidden" name="_method" value="delete">
+				<input type="hidden" name="id" value="{ portion.id }">
+				<button>Delete</button>
+			</form>
+		</li>
+		{/each}
+	</ul>
+
+	<h2>Food</h2>
+
+	<ul>
+		{#each foods_ as food}
+		<li>
+			{ food.food }
+			<form class="inline" method="post" action="/api/foods">
+				<input type="hidden" name="_method" value="delete">
+				<input type="hidden" name="id" value="{ food.id }">
+				<button>Delete</button>
+			</form>
+		</li>
+		{/each}
+	</ul>
 </article>
