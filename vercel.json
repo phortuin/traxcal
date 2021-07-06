@@ -1,11 +1,2 @@
 {
-  "version": 2,
-  "env": {
-
-  },
-  "rewrites": [
-    { "source": "/api/(.+)", "destination": "/api/$1.js" },
-    { "source": "/(.+)", "destination": "/index.html" }
-  ],
-  "trailingSlash": false
 }
